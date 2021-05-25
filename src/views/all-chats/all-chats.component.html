@@ -1,0 +1,66 @@
+<div class="all-chats-main-container">
+    <div class="left-section">
+        <div class="upper-bar-left">
+            <div class="upper-bar-image">
+                <img src="../../assets/img/user-placeholder.png" alt="user-image">
+            </div>
+            <div class="upper-bar-options">
+
+            </div>
+        </div>
+        <div class="all-chat-search">
+            <input type="text" placeholder="Buscar en chats">
+        </div>
+        <div class="all-chats">
+            <div class="single-chat-last-message">
+                <div class="single-chat-last-message-image">
+                    <img src="../../assets/img/user-placeholder.png" alt="user-image">
+                </div>
+                <div class="single-chat-last-message-info">
+                    <div class="info-title">
+                        <p>
+                            Oliver Bravo
+                        </p>
+                    </div>
+                    <div class="info-last-message">
+                        <p>
+                            Hola, ¿Cómo estas?
+                        </p>
+                    </div>
+                </div>
+                <div class="single-chat-last-message-time">
+                    <p>5:30</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="right-section">
+        <div class="upper-bar-right">
+            <div class="upper-bar-right-image">
+                <img src="../../assets/img/user-placeholder.png" alt="user-image">
+            </div>
+            <div class="upper-bar-right-info">
+                <div class="upper-bar-right-title">
+                    <p>
+                        Oliver Bravo
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="single-chat">
+            <div class="single-chat-message">
+                <div class="message-other-person">
+                    <p class="message-body">
+                        Hola, ¿Cómo estas?
+                    </p>
+                    <p class="message-time">5:30</p>
+                </div>
+                
+            </div>
+            <div class="single-chat-send">
+                <input type="text" placeholder="Nuevo mensaje" [(ngModel)]="message">
+                <button type="button" (click)="sendMessage()">Enviar</button>
+            </div>
+        </div>
+    </div>
+</div>
