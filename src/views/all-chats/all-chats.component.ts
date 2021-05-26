@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Chat } from '../../interfaces/Chat'
 import { User } from '../../interfaces/User'
 import { ChatServiceService } from '../../services/chat-service.service'
+import { UserServiceService } from '../../services/user-service.service'
 
 @Component({
   selector: 'app-all-chats',
@@ -9,21 +11,28 @@ import { ChatServiceService } from '../../services/chat-service.service'
 })
 export class AllChatsComponent implements OnInit{
   message = '';
-  selectedChat:User;
+  selectedChat:Chat;
+  allChats: Chat[];
+  currentUser: User;
 
-  constructor(private chatService: ChatServiceService){}
+  constructor(private chatService: ChatServiceService, private userService: UserServiceService){}
   
   ngOnInit(): void {
-    this.chatService.allUsersSubject.subscribe((users)=>{
-      if(users.length > 0){
-        this.chatService.changeCurrentChat(users[0].id);
+    this.chatService.allChatsSubject.subscribe((chats)=>{
+      if(chats.length > 0){
+        this.allChats = chats;
+        this.chatService.changeCurrentChat(chats[0].id);
       }
     })
 
-    this.chatService.currentUserSubject.subscribe((user) =>{
-      if(user){
-        this.selectedChat = user;
+    this.chatService.currentChatSubject.subscribe((chat) =>{
+      if(chat){
+        this.selectedChat = chat;
       }
+    })
+
+    this.userService.currentUserSubject.subscribe((user) => {
+      this.currentUser = user;
     })
   }
 

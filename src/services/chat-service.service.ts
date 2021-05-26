@@ -3,18 +3,21 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, ReplaySubject } from 'rxjs';
 import { User } from '../interfaces/User'
+import { Chat } from '../interfaces/Chat'
+import { SocketMessage } from '../interfaces/Message'
+import { UserServiceService } from '../services/user-service.service'
 import { io } from "socket.io-client";
+import { createRandomString } from '../utils/fns'
+import { DatePipe } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChatServiceService {
   private socket;
-  constructor(){
-    this.init();
-  }
-
-  allUsers:User[] = [
+  currentChat: Chat;
+  currentUser:User;
+  allUsers:Chat[] = [
     {
       id: '0001',
       name: 'Oliver Bravo',
@@ -24,20 +27,29 @@ export class ChatServiceService {
           sender: '0002',
           message: 'Hola, ¿Cómo estas?',
           receiver: '0001',
-          date: '2021/05/26'
+          date: 'Mon April 05 2021'
         }
       ]
     }
   ];
 
-  allUsersSubject:BehaviorSubject<User[]> = new BehaviorSubject(this.allUsers);
-  public currentUserSubject: ReplaySubject<User> = new ReplaySubject();
+  allChatsSubject:BehaviorSubject<Chat[]> = new BehaviorSubject(this.allUsers);
+  public currentChatSubject: ReplaySubject<Chat> = new ReplaySubject();
+
+  constructor( private userService:UserServiceService ){
+    this.init();
+  }
 
   init():void {
     try {
       this.socket = io('http://localhost:8080',{transports: ['websocket']});
       this.connectToAllChats();
       this.listenMessages();
+      this.userService.currentUserSubject.subscribe((user)=>{
+        if(user){
+          this.currentUser = user;
+        }
+      })
     } catch (error) {
       console.log('Could not connect socket.io');
     }
@@ -46,10 +58,18 @@ export class ChatServiceService {
   listenMessages(): void{
     try {
       //Draft observable 
-      this.socket.on('newMessage', data => {
+      this.socket.on('newMessage', (data:SocketMessage) => {
         for(const [userIndex, user] of this.allUsers.entries()){
           if(user.id == data.id){
-            console.log('user');
+            this.allUsers[userIndex].messages.push({
+              id: createRandomString(4),
+              sender: this.currentUser.id,
+              message: data.message,
+              receiver: this.currentChat.id,
+              date: new Date().toDateString()
+            })
+            this.allChatsSubject.next(this.allUsers);
+            this.currentChatSubject.next(this.allUsers[userIndex]);
           }
         }
         console.log(data);
@@ -86,7 +106,8 @@ export class ChatServiceService {
   changeCurrentChat(newCurrentUserId: string): void{
     for(const user of this.allUsers){
       if(user.id == newCurrentUserId){
-        this.currentUserSubject.next(user);
+        this.currentChatSubject.next(user);
+        this.currentChat = user;
         break;
       }
     }

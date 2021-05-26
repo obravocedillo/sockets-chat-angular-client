@@ -12,29 +12,29 @@
             <input type="text" placeholder="Buscar en chats">
         </div>
         <div class="all-chats">
-            <div class="single-chat-last-message">
+            <div class="single-chat-last-message" *ngFor="let chat of allChats">
                 <div class="single-chat-last-message-image">
                     <img src="../../assets/img/user-placeholder.png" alt="user-image">
                 </div>
                 <div class="single-chat-last-message-info">
                     <div class="info-title">
                         <p>
-                            Oliver Bravo
+                            {{chat.name}}
                         </p>
                     </div>
                     <div class="info-last-message">
                         <p>
-                            Hola, ¿Cómo estas?
+                            {{chat.messages[chat.messages.length-1].message}}
                         </p>
                     </div>
                 </div>
                 <div class="single-chat-last-message-time">
-                    <p>5:30</p>
+                    <p>{{chat.messages[chat.messages.length-1].date}}</p>
                 </div>
             </div>
         </div>
     </div>
-    <div class="right-section">
+    <div class="right-section" *ngIf="selectedChat && currentUser">
         <div class="upper-bar-right">
             <div class="upper-bar-right-image">
                 <img src="../../assets/img/user-placeholder.png" alt="user-image">
@@ -42,21 +42,30 @@
             <div class="upper-bar-right-info">
                 <div class="upper-bar-right-title">
                     <p>
-                        Oliver Bravo
+                        {{selectedChat.name}}
                     </p>
                 </div>
             </div>
         </div>
         <div class="single-chat">
-            <div class="single-chat-message">
-                <div class="message-other-person">
-                    <p class="message-body">
-                        Hola, ¿Cómo estas?
-                    </p>
-                    <p class="message-time">5:30</p>
+            <div class="all-messages-container">
+                <div class="single-chat-message" *ngFor="let singleMessage of selectedChat.messages" [ngClass]="{'right-message': singleMessage.sender === currentUser.id}">
+                    <div class="message-other-person message-format" *ngIf="singleMessage.sender !== currentUser.id">
+                        <p class="message-body">
+                            {{singleMessage.message}}
+                        </p>
+                        <p class="message-time">{{singleMessage.date}}</p>
+                    </div>
+    
+                    <div class="message-own-person message-format" *ngIf="singleMessage.sender === currentUser.id">
+                        <p class="message-body">
+                            {{singleMessage.message}}
+                        </p>
+                        <p class="message-time">{{singleMessage.date}}</p>
+                    </div>
                 </div>
-                
             </div>
+          
             <div class="single-chat-send">
                 <input type="text" placeholder="Nuevo mensaje" [(ngModel)]="message">
                 <button type="button" (click)="sendMessage()">Enviar</button>
