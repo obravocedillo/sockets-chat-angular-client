@@ -12,7 +12,7 @@
             <input type="text" placeholder="Buscar en chats">
         </div>
         <div class="all-chats">
-            <div class="single-chat-last-message" *ngFor="let chat of allChats">
+            <div class="single-chat-last-message" *ngFor="let chat of allChats" data-testid="single-chat-last-message">
                 <div class="single-chat-last-message-image">
                     <img src="../../assets/img/user-placeholder.png" alt="user-image">
                 </div>
@@ -51,7 +51,7 @@
             <div class="all-messages-container">
                 <div class="single-chat-message" *ngFor="let singleMessage of selectedChat.messages" [ngClass]="{'right-message': singleMessage.sender === currentUser.id}">
                     <div class="message-other-person message-format" *ngIf="singleMessage.sender !== currentUser.id">
-                        <p class="message-body">
+                        <p class="message-body" data-testid="single-chat-message">
                             {{singleMessage.message}}
                         </p>
                         <p class="message-time">{{singleMessage.date}}</p>
@@ -67,8 +67,8 @@
             </div>
           
             <div class="single-chat-send">
-                <input type="text" placeholder="Nuevo mensaje" [(ngModel)]="message">
-                <button type="button" (click)="sendMessage()">Enviar</button>
+                <input type="text" placeholder="Nuevo mensaje" [(ngModel)]="message" data-testid="message-input">
+                <button type="button" (click)="sendMessage()" data-testid="message-click">Enviar</button>
             </div>
         </div>
     </div>

@@ -60,12 +60,22 @@ export class ChatServiceService {
       //Draft observable 
       this.socket.on('newMessage', (data:SocketMessage) => {
         for(const [userIndex, user] of this.allUsers.entries()){
-          if(user.id == data.id){
+          if(user.id == data.id && this.currentChat){
             this.allUsers[userIndex].messages.push({
               id: createRandomString(4),
               sender: this.currentUser.id,
               message: data.message,
               receiver: this.currentChat.id,
+              date: new Date().toDateString()
+            })
+            this.allChatsSubject.next(this.allUsers);
+            this.currentChatSubject.next(this.allUsers[userIndex]);
+          }else{
+            this.allUsers[userIndex].messages.push({
+              id: createRandomString(4),
+              sender: this.currentUser.id,
+              message: data.message,
+              receiver: this.allUsers[0].id,
               date: new Date().toDateString()
             })
             this.allChatsSubject.next(this.allUsers);
